@@ -48,18 +48,78 @@ class _ExpenseState extends State<Expense> {
     setState(() {
       _registeredExpenses.remove(expense);
     });
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: const Duration(seconds: 2),
-        content: const Text("Expense is Deleted!"),
-        action: SnackBarAction(
-            label: 'Undo',
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.warning, color: Colors.red),
+            SizedBox(width: 5),
+            Text(
+              "Warning!",
+              style: TextStyle(color: Colors.red),
+            ),
+          ],
+        ),
+        content: const Text(
+          "Do you really want to Delete that expense?",
+          style: TextStyle(fontSize: 16),
+        ),
+        actions: [
+          // const Spacer(),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 15,
+              ),
+            ),
             onPressed: () {
+              Navigator.pop(context);
               setState(() {
                 _registeredExpenses.insert(expenseIndex, expense);
               });
-            }),
+            },
+            child: const Text(
+              "Cancel",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+          ),
+          // const SizedBox(width: 5),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.deepPurpleAccent,
+              foregroundColor: Colors.white,
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 15,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: const Duration(seconds: 5),
+                  content: const Text("Expense is Deleted!"),
+                  action: SnackBarAction(
+                      label: 'Undo',
+                      onPressed: () {
+                        setState(() {
+                          _registeredExpenses.insert(expenseIndex, expense);
+                        });
+                      }),
+                ),
+              );
+            },
+            child: const Text(
+              "Yes",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+          ),
+          // const Spacer(),
+        ],
       ),
     );
   }

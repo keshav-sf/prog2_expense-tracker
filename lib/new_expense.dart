@@ -33,15 +33,14 @@ class _NewExpenseState extends State<NewExpense> {
 
   void _submitExpenseData() {
     final enteredAmount = double.tryParse(_amountcontroller.text);
-    final amountisInvalid = enteredAmount == null || enteredAmount <= 0;
-    if (_titleController.text.trim().isEmpty ||
-        amountisInvalid ||
-        selectedDate == null) {
+    // final amountisInvalid = enteredAmount == null || enteredAmount <= 0;
+    if (_titleController.text.trim().isEmpty) {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('Invalid Input'),
-          content: const Text("Please Enter a valid title, amount and date."),
+          title: const Text('Invalid Title'),
+          content:
+              const Text("Title is a Mandatory Field. It cannot be Empty!"),
           actions: [
             TextButton(
               onPressed: () {
@@ -54,6 +53,43 @@ class _NewExpenseState extends State<NewExpense> {
       );
       return;
     }
+    if (enteredAmount == null || enteredAmount <= 0) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Invalid Amount'),
+          content: const Text("Please Enter a valid Amount."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text("Okay"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+    if (selectedDate == null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Invalid Date'),
+          content: const Text("Please select a date."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text("Okay"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     widget.onAddExpense(ExpenseStructure(
         title: _titleController.text,
         amount: enteredAmount,
@@ -168,15 +204,30 @@ class _NewExpenseState extends State<NewExpense> {
                           },
                         ),
                         const Spacer(),
-                        Text(selectedDate == null
-                            ? 'No Date Selected'
-                            : formatter.format(selectedDate!)),
-                        IconButton(
+                        TextButton.icon(
                           onPressed: () {
                             presentDatePicker();
                           },
-                          icon: const Icon(Icons.calendar_month),
-                        )
+                          icon: const Icon(
+                            Icons.calendar_month,
+                            color: Colors.black,
+                          ),
+                          label: Text(
+                            selectedDate == null
+                                ? 'No Date Selected'
+                                : formatter.format(selectedDate!),
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                        ),
+                        // Text(selectedDate == null
+                        //     ? 'No Date Selected'
+                        //     : formatter.format(selectedDate!)),
+                        // IconButton(
+                        //   onPressed: () {
+                        //     presentDatePicker();
+                        //   },
+                        //   icon: const Icon(Icons.calendar_month),
+                        // )
                       ],
                     )
                   else
@@ -195,15 +246,30 @@ class _NewExpenseState extends State<NewExpense> {
                         ),
                         // SizedBox(width: 10),
                         const Spacer(),
-                        Text(selectedDate == null
-                            ? 'No Date Selected'
-                            : formatter.format(selectedDate!)),
-                        IconButton(
+                        TextButton.icon(
                           onPressed: () {
                             presentDatePicker();
                           },
-                          icon: const Icon(Icons.calendar_month),
-                        )
+                          icon: const Icon(
+                            Icons.calendar_month,
+                            color: Colors.black,
+                          ),
+                          label: Text(
+                            selectedDate == null
+                                ? 'No Date Selected'
+                                : formatter.format(selectedDate!),
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                        ),
+                        // Text(selectedDate == null
+                        //     ? 'No Date Selected'
+                        //     : formatter.format(selectedDate!)),
+                        // IconButton(
+                        //   onPressed: () {
+                        //     presentDatePicker();
+                        //   },
+                        //   icon: const Icon(Icons.calendar_month),
+                        // )
                       ],
                     ),
                   const SizedBox(
@@ -275,15 +341,18 @@ class _NewExpenseState extends State<NewExpense> {
                         const SizedBox(
                           width: 15,
                         ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              // backgroundColor: Colors.deepPur
-                              textStyle: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 15)),
-                          onPressed: () {
-                            _submitExpenseData();
-                          },
-                          child: const Text("Save Expense"),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.35,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                // backgroundColor: Colors.deepPur
+                                textStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 12)),
+                            onPressed: () {
+                              _submitExpenseData();
+                            },
+                            child: const Text("Save Expense"),
+                          ),
                         ),
                         const Spacer()
                       ],
